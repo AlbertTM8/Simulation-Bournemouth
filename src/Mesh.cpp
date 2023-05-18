@@ -31,8 +31,7 @@ void Mesh::updateChain(){
 
     
     for(int i = 0; i<chain.size(); i++){
-        ngl::Vec3 first = chain[i].getStart();
-        ngl::Vec3 second = chain[i].getEnd();
+
         // chain[0].setStart({0.0,0.0,0.0});
         // // if(std::sqrt(((first.m_x-second.m_x)*(first.m_x-second.m_x))+ ((first.m_y-second.m_y)*(first.m_y-second.m_y)) + ((first.m_z-second.m_z)
         // //     *(first.m_z-second.m_z))) < 0.5){
@@ -41,12 +40,14 @@ void Mesh::updateChain(){
         // }
         // else{
             
-        force[i].m_y = hookeForce(i) - 1; 
-                
+        force[i]= hookeForce(i); 
+        force[i].m_y=force[i].m_y-0.1;
         // }
        
         acceleration[i].m_y = force[i].m_y/mass;
+        acceleration[i].m_x = force[i].m_x/mass;
         velocity[i].m_y = (velocity[i].m_y*0.98) + (acceleration[i].m_y/100.0);
+        velocity[i].m_x = (velocity[i].m_x*0.98) + (acceleration[i].m_x/100.0);
         chain[i].setEnd(chain[i].getEnd() + velocity[i]);
         if(i != chain.size()-1){
             chain[i].setStart(chain[i+1].getEnd());
@@ -85,15 +86,44 @@ void Mesh::setVel(float _vel, int _index){
     velocity[_index].m_y += _vel;
 }
 
-float Mesh::hookeForce(int _index){
-    if(chain[_index].getEnd().m_y-chain[_index].getStart().m_y>0.5){
-        return -(std::abs(chain[_index].getEnd().m_y-chain[_index].getStart().m_y)-0.5)*2;
-    }
-    else if(chain[_index].getEnd().m_y-chain[_index].getStart().m_y<-0.5){
-        
-        return (std::abs(chain[_index].getEnd().m_y-chain[_index].getStart().m_y)-0.5)*2;
-    }
+ngl::Vec3 Mesh::hookeForce(int _index){
+    // if(chain[_index].getEnd().m_y-chain[_index].getStart().m_y>0.5){
+        ngl::Vec3 first = chain[_index].getStart();
+        ngl::Vec3 second = chain[_index].getEnd();
+        float length = std::sqrt(((first.m_x-second.m_x)*(first.m_x-second.m_x))+ ((first.m_y-second.m_y)*(first.m_y-second.m_y)) + ((first.m_z-second.m_z)
+        *(first.m_z-second.m_z)));
+        float diff = length - 0.5f;
+        float x = chain[_index].getEnd().m_x-chain[_index].getStart().m_x;
+        float y = chain[_index].getEnd().m_y-chain[_index].getStart().m_y;
+        float z = chain[_index].getEnd().m_z-chain[_index].getStart().m_z;
+        ngl::Vec3 ret;
+        float hooke = 0.2;
+        if(diff - 0.5f > 0.0f){
 
-    
-    return 0;
+            if(first.m_x > second.m_x){
+                ret.m_x = -x * hooke * acos(y/length);
+            }
+            else {
+                ret.m_x = -x * hooke  * acos(y/length);
+            }
+            if(first.m_y > second.m_y){
+                ret.m_y = y * hooke * std::asin(y/length);
+            }
+            else {
+                ret.m_y = -y * hooke * std::asin(y/length);
+            }
+            if(first.m_z > second.m_z){
+                ret.m_z = z * hooke * asin(z/length);
+            }
+            else {
+                ret.m_z = -z * hooke * asin(z/length);
+            }
+        return ret;
+        // return -(std::abs(chain[_index].getEnd().m_y-chain[_index].getStart().m_y)-0.5)*2;
+    }
+    // else if(chain[_index].getEnd().m_y-chain[_index].getStart().m_y<-0.5){
+    ngl::Vec3 null = {0,0,0};
+    return null;
+    //     return (std::abs(chain[_index].getEnd().m_y-chain[_index].getStart().m_y)-0.5)*2;
+    // }
 }

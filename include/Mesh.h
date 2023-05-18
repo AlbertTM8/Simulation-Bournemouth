@@ -5,6 +5,7 @@
 #include <ngl/Vec3.h>
 #include <iostream>
 #include "Line.h"
+
 class Mesh{
 public:
 Mesh(int _numlines);
@@ -14,7 +15,7 @@ void setChainLink(int _index, bool _start, ngl::Vec3 _val);
 ngl::Vec3  getChainLink(int _index, bool _start);
 float hookeForcey(int _index);
 float hookeForcex(int _index);
-ngl::Vec3 hookeForcex(int _index);
+ngl::Vec3 hookeForce(int _index);
 void setVel(float _vel, int _index);
 private:
 std::vector <Line> chain;
