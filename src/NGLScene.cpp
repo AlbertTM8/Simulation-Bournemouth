@@ -39,7 +39,7 @@ void NGLScene::initializeGL()
   // we must call this first before any other GL commands to load and link the
   // gl commands from the lib, if this is not done program will crash
   ngl::NGLInit::initialize();
-  mesh = Mesh(1);
+  mesh = Mesh(3);
   glClearColor(0.4f, 0.4f, 0.4f, 1.0f); // Grey Background
   // enable depth testing for drawing
   glEnable(GL_DEPTH_TEST);
@@ -202,28 +202,21 @@ void NGLScene::keyPressEvent(QKeyEvent *_event)
     QGuiApplication::exit(EXIT_SUCCESS);
     break;
   case Qt::Key_W:{
-    ngl::Vec3 diff = {0.0, 0.1, 0.0};
-    mesh.setChainLink(0, false, mesh.getChainLink(0,false) + diff);
-    std::cout << "W PRESSED";
+    mesh.setVel(0.2, 2, 1);
     break;
   }
   case Qt::Key_A:{
-    ngl::Vec3 diff = {0.1, 0.0, 0.0};
-    mesh.setChainLink(0, false, mesh.getChainLink(0,false) + diff);
-    std::cout << "A PRESSED";
+    mesh.setVel(-0.2, 2, 0);
     break;
   }
 
   case Qt::Key_S:{
-    mesh.setVel(-0.2, 1);
-    std::cout << "S PRESSED";
+    mesh.setVel(-0.2, 2,1);
     break;
   }
 
   case Qt::Key_D:{
-    ngl::Vec3 diff = {-0.1, 0.0, 0.0};
-    mesh.setChainLink(0, false, mesh.getChainLink(0,false) + diff);
-    std::cout << "D PRESSED";
+    mesh.setVel(0.2, 2, 0);
     break;
   }
   case Qt::Key_4:

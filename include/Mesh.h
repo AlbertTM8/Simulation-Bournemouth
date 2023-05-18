@@ -16,7 +16,7 @@ ngl::Vec3  getChainLink(int _index, bool _start);
 float hookeForcey(int _index);
 float hookeForcex(int _index);
 ngl::Vec3 hookeForce(int _index);
-void setVel(float _vel, int _index);
+void setVel(float _vel, int _index, int _dir);
 private:
 std::vector <Line> chain;
 std::vector <ngl::Vec3> velocity;

@@ -40,7 +40,7 @@ void Mesh::updateChain(){
         // }
         // else{
             
-        force[i]= hookeForce(i); 
+        force[i]= hookeForce(i)/2 - hookeForce(i+1)/2; 
         force[i].m_y=force[i].m_y-0.1;
         // }
        
@@ -50,7 +50,7 @@ void Mesh::updateChain(){
         velocity[i].m_x = (velocity[i].m_x*0.98) + (acceleration[i].m_x/100.0);
         chain[i].setEnd(chain[i].getEnd() + velocity[i]);
         if(i != chain.size()-1){
-            chain[i].setStart(chain[i+1].getEnd());
+            chain[i+1].setStart(chain[i].getEnd());
         }
         ngl::Vec3 begin = {0.0,0.0,0.0};
         chain[0].setStart(begin);
@@ -82,8 +82,13 @@ ngl::Vec3  Mesh::getChainLink(int _index, bool _start){
 }
 
 
-void Mesh::setVel(float _vel, int _index){
+void Mesh::setVel(float _vel, int _index, int _dir){
+    if(_dir == 1){
     velocity[_index].m_y += _vel;
+    }
+    else if(_dir == 0){
+    velocity[_index].m_x += _vel;
+    }
 }
 
 ngl::Vec3 Mesh::hookeForce(int _index){
