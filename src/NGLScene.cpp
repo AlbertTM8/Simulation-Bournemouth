@@ -219,8 +219,22 @@ void NGLScene::keyPressEvent(QKeyEvent *_event)
     mesh.setVel(0.2, 2, 0);
     break;
   }
-  case Qt::Key_4:
+  case Qt::Key_I:{
+    mesh.setBeg(0.2, 0, 1);
     break;
+  }
+    case Qt::Key_J:{
+    mesh.setBeg(-0.2, 0, 0);
+    break;
+  }
+    case Qt::Key_K:{
+    mesh.setBeg(-0.2, 0, 1);
+    break;
+  }
+    case Qt::Key_L:{
+    mesh.setBeg(0.2, 0, 0);
+    break;
+  }
   default:
     break;
   

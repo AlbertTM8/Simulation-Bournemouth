@@ -6,6 +6,7 @@ Mesh::Mesh(int _numlines)
 {   
     ngl::Vec3 start = {0.0f,0.0f,0.0f};
     ngl::Vec3 end = {0.0f,-0.5,0.0f};
+    ngl::Vec3 begin = {0.0,0.0,0.0};
     for(float i = 0; i<_numlines; i+=1.0f){
         chain.push_back(Line(start, end));
         // std::cout << "Start = " << start.m_y;
@@ -46,13 +47,12 @@ void Mesh::updateChain(){
        
         acceleration[i].m_y = force[i].m_y/mass;
         acceleration[i].m_x = force[i].m_x/mass;
-        velocity[i].m_y = (velocity[i].m_y*0.98) + (acceleration[i].m_y/100.0);
-        velocity[i].m_x = (velocity[i].m_x*0.98) + (acceleration[i].m_x/100.0);
+        velocity[i].m_y = (velocity[i].m_y*0.96) + (acceleration[i].m_y/100.0);
+        velocity[i].m_x = (velocity[i].m_x*0.96) + (acceleration[i].m_x/100.0);
         chain[i].setEnd(chain[i].getEnd() + velocity[i]);
         if(i != chain.size()-1){
             chain[i+1].setStart(chain[i].getEnd());
         }
-        ngl::Vec3 begin = {0.0,0.0,0.0};
         chain[0].setStart(begin);
 }   
     // std::cout << "velocity = " << velocity.m_y << "\n";
@@ -90,6 +90,14 @@ void Mesh::setVel(float _vel, int _index, int _dir){
     velocity[_index].m_x += _vel;
     }
 }
+void Mesh::setBeg(float _vel, int _index, int _dir){
+    if(_dir == 1){
+    begin.m_y += _vel;
+    }
+    else if(_dir == 0){
+    begin.m_x += _vel;
+    }
+}
 
 ngl::Vec3 Mesh::hookeForce(int _index){
     // if(chain[_index].getEnd().m_y-chain[_index].getStart().m_y>0.5){
@@ -102,7 +110,7 @@ ngl::Vec3 Mesh::hookeForce(int _index){
         float y = chain[_index].getEnd().m_y-chain[_index].getStart().m_y;
         float z = chain[_index].getEnd().m_z-chain[_index].getStart().m_z;
         ngl::Vec3 ret;
-        float hooke = 0.2;
+        float hooke = 0.3;
         if(diff - 0.5f > 0.0f){
 
             if(first.m_x > second.m_x){
@@ -132,3 +140,4 @@ ngl::Vec3 Mesh::hookeForce(int _index){
     //     return (std::abs(chain[_index].getEnd().m_y-chain[_index].getStart().m_y)-0.5)*2;
     // }
 }
+

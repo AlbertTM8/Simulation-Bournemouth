@@ -17,12 +17,14 @@ float hookeForcey(int _index);
 float hookeForcex(int _index);
 ngl::Vec3 hookeForce(int _index);
 void setVel(float _vel, int _index, int _dir);
+void setBeg(float _vel, int _index, int _dir);
 private:
 std::vector <Line> chain;
 std::vector <ngl::Vec3> velocity;
 std::vector <ngl::Vec3> acceleration;
 std::vector <ngl::Vec3> force;
 static constexpr float mass = 1;
+ngl::Vec3 begin;
 };
 
 
