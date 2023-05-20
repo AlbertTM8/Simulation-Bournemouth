@@ -102,6 +102,7 @@ private:
     void timerEvent(QTimerEvent *_event) override;
     void drawline();
     float m_updateTime=0;
+    bool sup = false;
 };
 
 

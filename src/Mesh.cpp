@@ -19,7 +19,7 @@ Mesh::Mesh(int _numlines)
         ngl::Vec3 offset = {0,0.25,0};
         supforce.push_back({0,0,0});
         if(i!= 0){
-            support.push_back(Line(start + offset, start - offset));
+            support.push_back(Line(start, end));
             supvelocity.push_back({0,0,0});
             supacceleration.push_back({0,0,0});
         }
@@ -50,21 +50,24 @@ void Mesh::updateChain(){
         checkLength(i);
 
         if(i!= 0){
-            support[i-1].setStart((chain[i-1].getEnd()+chain[i-1].getStart())/2);
-            support[i-1].setEnd((chain[i].getEnd()+chain[i].getStart())/2);
-            checkSide(i-1);
+            support[i-1].setStart(chain[i-1].getStart());
+            support[i-1].setEnd(chain[i].getEnd());
             supforce[i] = supForce(i-1);
         }
-
+        if(supB == false){
+            ngl::Vec3 zero = {0,0,0};
+            supforce[i] = zero;
+            // supforce[i+1] = zero;
+        }
         force[i]= hookeForce(i)/2 - hookeForce(i+1)/2 + supforce[i]-supforce[i+1]; 
         force[i].m_y=force[i].m_y-0.098;
-    
+
         acceleration[i].m_y = force[i].m_y/mass;
         acceleration[i].m_x = force[i].m_x/mass;
 
 
-        velocity[i].m_y = (velocity[i].m_y*0.9) + (acceleration[i].m_y/100.0);
-        velocity[i].m_x = (velocity[i].m_x*0.9) + (acceleration[i].m_x/100.0);
+        velocity[i].m_y = (velocity[i].m_y*0.85) + (acceleration[i].m_y/100.0);
+        velocity[i].m_x = (velocity[i].m_x*0.85) + (acceleration[i].m_x/100.0);
 
 
         chain[i].setEnd(chain[i].getEnd() + velocity[i]);
@@ -119,7 +122,7 @@ ngl::Vec3 Mesh::hookeForce(int _index){
         ngl::Vec3 second = chain[_index].getEnd();
         float length = std::sqrt(((first.m_x-second.m_x)*(first.m_x-second.m_x))+ ((first.m_y-second.m_y)*(first.m_y-second.m_y)) + ((first.m_z-second.m_z)
         *(first.m_z-second.m_z)));
-        float diff = length - 0.5f;
+        float diff = length - 0.3f;
         float x = chain[_index].getEnd().m_x-chain[_index].getStart().m_x;
         float y = chain[_index].getEnd().m_y-chain[_index].getStart().m_y;
         float z = chain[_index].getEnd().m_z-chain[_index].getStart().m_z;
@@ -163,7 +166,7 @@ ngl::Vec3 Mesh::supForce(int _index){
         float y = support[_index].getEnd().m_y-support[_index].getStart().m_y;
         float z = support[_index].getEnd().m_z-support[_index].getStart().m_z;
         ngl::Vec3 ret;
-        float hooke = 0.3;
+        float hooke = 0.2;
         if(diff > 0.0f){
 
             if(first.m_x > second.m_x){
@@ -209,12 +212,6 @@ void Mesh::checkLength(int _index){
 }
 }
 
-void Mesh::checkSide(int _index){
-    ngl::Vec3 first = support[_index].getStart();
-    ngl::Vec3 second = support[_index].getEnd();
-    if(second.m_x < first.m_x){
-        ngl::Vec3  ret = support[_index].getEnd();
-        ret.m_x = support[_index].getStart().m_x + 0.01;
-        support[_index].setEnd(ret);
-    }
+void Mesh::setSupB(){
+    supB = !supB;
 }

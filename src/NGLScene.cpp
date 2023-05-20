@@ -39,7 +39,7 @@ void NGLScene::initializeGL()
   // we must call this first before any other GL commands to load and link the
   // gl commands from the lib, if this is not done program will crash
   ngl::NGLInit::initialize();
-  mesh = Mesh(3);
+  mesh = Mesh(4);
   glClearColor(0.4f, 0.4f, 0.4f, 1.0f); // Grey Background
   // enable depth testing for drawing
   glEnable(GL_DEPTH_TEST);
@@ -236,6 +236,14 @@ void NGLScene::keyPressEvent(QKeyEvent *_event)
     mesh.setBeg(0.2, 0, 0);
     break;
   }
+  case Qt::Key_1:{
+    sup = !sup;
+    break;
+  }
+  case Qt::Key_2:{
+    mesh.setSupB();
+    break;
+  }
   default:
     break;
   
@@ -255,14 +263,16 @@ void NGLScene::drawline(){
   m_vao->setNumIndices(verts.size());
   m_vao->setMode(GL_LINES);
   m_vao->draw();
-
+  if(sup == true){
   verts = mesh.getSup();
-    m_vao->setData(ngl::SimpleVAO::VertexData(verts.size() * sizeof(ngl::Vec3), verts[0].m_x));
+  m_vao->setData(ngl::SimpleVAO::VertexData(verts.size() * sizeof(ngl::Vec3), verts[0].m_x));
   m_vao->setVertexAttributePointer(0, 3, GL_FLOAT, 0, 0);
   // divide by 2 as we have both verts and normals
+
   m_vao->setNumIndices(verts.size());
   m_vao->setMode(GL_LINES);
   m_vao->draw();
+  }
   m_vao->unbind();
   
 }
