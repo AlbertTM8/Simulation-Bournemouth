@@ -55,6 +55,7 @@ void NGLScene::initializeGL()
   m_project = ngl::perspective(45.0f, 720.0f / 576.0f, 0.5f, 150.0f);
   ngl::ShaderLib::use(ngl::nglColourShader);
   ngl::ShaderLib::setUniform("Colour", 1.0f, 1.0f, 1.0f, 1.0f);
+  mesh.setVel(-0.2, 1,1);
   startTimer(10);
 }
 
@@ -202,21 +203,21 @@ void NGLScene::keyPressEvent(QKeyEvent *_event)
     QGuiApplication::exit(EXIT_SUCCESS);
     break;
   case Qt::Key_W:{
-    mesh.setVel(0.2, 2, 1);
+    mesh.setVel(0.2, 1, 1);
     break;
   }
   case Qt::Key_A:{
-    mesh.setVel(-0.2, 2, 0);
+    mesh.setVel(-0.2, 1, 0);
     break;
   }
 
   case Qt::Key_S:{
-    mesh.setVel(-0.2, 2,1);
+    mesh.setVel(-0.2, 1,1);
     break;
   }
 
   case Qt::Key_D:{
-    mesh.setVel(0.2, 2, 0);
+    mesh.setVel(0.2, 1, 0);
     break;
   }
   case Qt::Key_I:{
@@ -249,6 +250,14 @@ void NGLScene::drawline(){
   //     {{ngl::Vec3(0.0f, 1.0f, 1.0f),
   //       ngl::Vec3(0.0f, 0.0f, -1.0f)}};
   m_vao->setData(ngl::SimpleVAO::VertexData(verts.size() * sizeof(ngl::Vec3), verts[0].m_x));
+  m_vao->setVertexAttributePointer(0, 3, GL_FLOAT, 0, 0);
+  // divide by 2 as we have both verts and normals
+  m_vao->setNumIndices(verts.size());
+  m_vao->setMode(GL_LINES);
+  m_vao->draw();
+
+  verts = mesh.getSup();
+    m_vao->setData(ngl::SimpleVAO::VertexData(verts.size() * sizeof(ngl::Vec3), verts[0].m_x));
   m_vao->setVertexAttributePointer(0, 3, GL_FLOAT, 0, 0);
   // divide by 2 as we have both verts and normals
   m_vao->setNumIndices(verts.size());
